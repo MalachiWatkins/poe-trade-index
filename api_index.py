@@ -1,4 +1,4 @@
-#Sweez was here :)
+# import pdb; pdb.set_trace() # debuger
 from configparser import ConfigParser
 import pymongo
 from pymongo import MongoClient
@@ -11,15 +11,15 @@ import re
 from Atlas_Connection import Atlas_Connect
 cluster = MongoClient(Atlas_Connect)
 Itemdb = cluster["POE_DOCS"]
-CurrencyCollection = Itemdb["Currency"]
-CardsCollection = Itemdb["Cards"]
-AccessoriesCollection = Itemdb["accessories"]
-GemsCollection = Itemdb["gems"]
-JewelsCollection = Itemdb["Jewels"]
-MapsCollection = Itemdb["Maps"]
-WeaponsCollection = Itemdb["weapons"]
-ArmourCollection = Itemdb["armour"]
-HeistequipmentCollection = Itemdb["heistequipment"]
+currencyCollection = Itemdb["Currency"]
+cardsCollection = Itemdb["Cards"]
+accessoriesCollection = Itemdb["accessories"]
+gemsCollection = Itemdb["gems"]
+jewelsCollection = Itemdb["Jewels"]
+mapsCollection = Itemdb["Maps"]
+weaponsCollection = Itemdb["weapons"]
+armourCollection = Itemdb["armour"]
+flaskCollection = Itemdb["flasks"]
 ################
 ###Categories###
 ################
@@ -51,6 +51,11 @@ HeistequipmentCollection = Itemdb["heistequipment"]
 # SubCat: heistreward, contract, heisttool, heistweapon, heistutility,
 
 
+def sweez():
+    a = 'a'
+    return
+
+
 def get_price_override(stashname):
     priceRegex = "~price [\S]+ [\S]+"
     buyOutRegex = "~b/o [\S]+ [\S]+"
@@ -73,7 +78,7 @@ def post(item_length, list_items, priceoverride):
     x = 0
     list_index['stash']
     keylist = ['icon', 'name', 'stackSize', 'identified', 'descrText', 'ilvl',
-               'explicitMods', 'implicitMods', 'note', 'baseType', 'typeLine', 'flavourText', 'x', 'y']
+               'explicitMods', 'implicitMods', 'note', 'baseType', 'typeLine', 'flavourText', 'x', 'y', 'corrupted', 'properties', 'sockets', 'influences', 'requirements']
 
     while x < item_length:
         items_in_index = list_items[x]
@@ -92,26 +97,27 @@ def post(item_length, list_items, priceoverride):
         # If item is not priced, try assigning a tab-wide price
         try:
             if priceoverride != None and items_in_index['note'] == '':
-                items_in_index['note'] = priceoverride
+                Post['note'] = priceoverride
         except KeyError:
             if priceoverride != None:
-                items_in_index['note'] = priceoverride
+                Post['note'] = priceoverride
 
-            # add subcategory data
-        if extended['category'] == 'currency':
-            not_i = 1
-            # CurrencyCollection.insert_one(Post)
-        elif extended["category"] == 'cards':
-            not_i = 1
-            # CardsCollection.insert_one(Post)
-        elif extended["category"] == 'accessories':
-            try:
-                nullnvoid = items_in_index["note"]
-                pass
-            except KeyError:
-                pass
-
-            AccessoriesCollection.insert_one(Post)
+        # Define dictionary to use in insert_one command (Currently incomplete list)
+        collections = {
+            'currency': currencyCollection,
+            'cards': cardsCollection,
+            'accessories': accessoriesCollection,
+            'gems': gemsCollection,
+            'jewels': jewelsCollection,
+            'maps': mapsCollection,
+            'weapons': weaponsCollection,
+            'armour': armourCollection,
+            'flasks': flaskCollection
+        }
+        # Reference the above dictionary to add the item data to the appropriate collection
+        if extended['category'] not in ['heistequipment']:
+            sweez()
+            collections[extended['category']].insert_one(Post)
 
         x += 1
     return
