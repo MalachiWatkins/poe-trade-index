@@ -74,7 +74,7 @@ def get_price_override(stashname):
         pass
 
 
-def post(item_length, list_items, priceoverride):
+def post(item_length, list_items, priceoverride, accountname):
     x = 0
     list_index['stash']
     keylist = ['icon', 'name', 'stackSize', 'identified', 'descrText', 'ilvl',
@@ -82,7 +82,7 @@ def post(item_length, list_items, priceoverride):
 
     while x < item_length:
         items_in_index = list_items[x]
-        Post = {}
+        Post = {'accountName': accountname}
         for key in keylist:
             try:
                 Post[key] = items_in_index[key]
@@ -115,9 +115,14 @@ def post(item_length, list_items, priceoverride):
             'flasks': flaskCollection
         }
         # Reference the above dictionary to add the item data to the appropriate collection
-        if extended['category'] not in ['heistequipment']:
-            sweez()
-            collections[extended['category']].insert_one(Post)
+
+        # temp fix to a few categories that threw som errors when incerting
+        try:
+            if extended['category'] not in ['heistequipment']:
+                if extended['category'] not in ['heistmission']:
+                    collections[extended['category']].insert_one(Post)
+        except KeyError:
+            pass
 
         x += 1
     return
@@ -162,12 +167,13 @@ while True:  # loops infinitely
                 # priceoverride(list_index['Stash'])
                 # ETHICAL LEAGUE (PL12057)
                 # grabs all the item data form the stashes in that what ever filter you set
+                acc_name = list_index['accountName']
                 list_items = list_index['items']
                 # gets length of the item data list
                 item_length = len(list_items)
                 # loops through the item list
                 post(item_length=item_length,
-                     list_items=list_items, priceoverride=priceoverride)
+                     list_items=list_items, priceoverride=priceoverride, accountname=acc_name)
 
             x += 1
         # writes next change id to the file so it can be on the current shard
