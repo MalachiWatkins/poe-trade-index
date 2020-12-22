@@ -23,33 +23,9 @@ flaskCollection = Itemdb["flasks"]
 ################
 ###Categories###
 ################
-# Currency
-# SubCat: resonator
 
-# Cards
-# No base Type
 
-# accessories
-# SubCat: ring, amulet, belt, trinket,
-
-# gems
-# SubCat: activegem, supportgem
-
-# jewels
-# SubCat: abyss, cluster,
-
-# maps
-# SubCat: fragment, scarab,
-
-# weapons
-# SubCat: staff, onesword, dagger, wand, twoaxe, twosword, twomace, bow, onemace, sceptre, claw, dagger, oneaxe, twoaxe,
-
-# armour
-# SubCat: chest, helmet, gloves, boots, quiver, shield
-
-# heistequipment
-# SubCat: heistreward, contract, heisttool, heistweapon, heistutility,
-
+# check stash id if same in db check for diff and remove
 
 def sweez():
     a = 'a'
@@ -74,7 +50,7 @@ def get_price_override(stashname):
         pass
 
 
-def post(item_length, list_items, priceoverride, accountname):
+def post(item_length, list_items, priceoverride, accountname, stashid, stashname):
     x = 0
     list_index['stash']
     keylist = ['icon', 'name', 'stackSize', 'identified', 'descrText', 'ilvl',
@@ -82,7 +58,8 @@ def post(item_length, list_items, priceoverride, accountname):
 
     while x < item_length:
         items_in_index = list_items[x]
-        Post = {'accountName': accountname}
+        Post = {'accountName': accountname,
+                'stashid': stashid, 'stashname': stashname}
         for key in keylist:
             try:
                 Post[key] = items_in_index[key]
@@ -169,11 +146,13 @@ while True:  # loops infinitely
                 # grabs all the item data form the stashes in that what ever filter you set
                 acc_name = list_index['accountName']
                 list_items = list_index['items']
+                stash_id = list_index['id']
+                stash_name = list_index['stash']
                 # gets length of the item data list
                 item_length = len(list_items)
                 # loops through the item list
                 post(item_length=item_length,
-                     list_items=list_items, priceoverride=priceoverride, accountname=acc_name)
+                     list_items=list_items, priceoverride=priceoverride, accountname=acc_name, stashid=stash_id, stashname=stash_name)
 
             x += 1
         # writes next change id to the file so it can be on the current shard
