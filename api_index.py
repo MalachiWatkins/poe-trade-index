@@ -13,13 +13,13 @@ cluster = MongoClient(Atlas_Connect)
 Itemdb = cluster["POE_DOCS"]
 currencyCollection = Itemdb["Currency"]
 cardsCollection = Itemdb["Cards"]
-accessoriesCollection = Itemdb["accessories"]
-gemsCollection = Itemdb["gems"]
+accessoriesCollection = Itemdb["Accessories"]
+gemsCollection = Itemdb["Gems"]
 jewelsCollection = Itemdb["Jewels"]
 mapsCollection = Itemdb["Maps"]
-weaponsCollection = Itemdb["weapons"]
-armourCollection = Itemdb["armour"]
-flaskCollection = Itemdb["flasks"]
+weaponsCollection = Itemdb["Weapons"]
+armourCollection = Itemdb["Armour"]
+flaskCollection = Itemdb["Flasks"]
 ################
 ###Categories###
 ################
