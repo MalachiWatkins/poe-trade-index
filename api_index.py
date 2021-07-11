@@ -1,14 +1,15 @@
-# import pdb; pdb.set_trace() # debuger
-from configparser import ConfigParser
-import pymongo
-from pymongo import MongoClient
-import pprint
-import requests
-import json
-import time
-import random
-import re
 from Atlas_Connection import Atlas_Connect
+import re
+import random
+import time
+import json
+import requests
+import pprint
+from pymongo import MongoClient
+import pymongo
+from configparser import ConfigParser
+
+# import pdb; pdb.set_trace() # debuger
 cluster = MongoClient(Atlas_Connect)
 Itemdb = cluster["POE_DOCS"]
 currencyCollection = Itemdb["Currency"]
@@ -112,10 +113,13 @@ while True:  # loops infinitely
     with open("next_change_id.txt") as file:
         change_id = file.read()
         # api response with the change id
-        response = requests.get(
-            "http://www.pathofexile.com/api/public-stash-tabs?id=" + change_id)
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.114 Safari/537.36'}
+        url = "http://www.pathofexile.com/api/public-stash-tabs?id=" + change_id
+        response = requests.get(url, headers=headers)
         file.close()
         # reads the response and formats as json
+        print(response)
         json_response = response.json()
         # gets the next change id
         next_change_id = json_response['next_change_id']
