@@ -9,7 +9,8 @@ from pymongo import MongoClient
 import pymongo
 from configparser import ConfigParser
 
-# import pdb; pdb.set_trace() # debuger
+# import pdb
+# pdb.set_trace()  # debuger
 cluster = MongoClient(Atlas_Connect)
 Itemdb = cluster["POE_DOCS"]
 currencyCollection = Itemdb["Currency"]
@@ -28,9 +29,95 @@ flaskCollection = Itemdb["Flasks"]
 
 # check stash id if same in db check for diff and remove
 
-def sweez():
-    a = 'a'
+
+link_list_parsed = []
+l_l = []
+
+
+def socket_parsing(key, single_post):
+    # gets socket data and removes the attr field
+    raw_socket_data = []
+    single_socket_post = single_post
+    for socket_group in single_socket_post:
+        single_socket_post = [socket_group['group'],
+                              socket_group['sColour']]
+        raw_socket_data.append(single_socket_post)
+    link_0 = []
+    link_1 = []
+    link_2 = []
+    link_3 = []
+    link_4 = []
+    link_5 = []
+    x = 0
+    while x < len(raw_socket_data):
+        single_socket_data = raw_socket_data[x]
+        socket_groups = single_socket_data[0]
+        socket_colour = single_socket_data[1]
+        dict = {
+            0: link_0,
+            1: link_1,
+            2: link_2,
+            3: link_3,
+            4: link_4,
+            5: link_5
+        }
+        for link_key in dict:
+            if link_key == socket_groups:
+                dict[link_key].append(socket_colour)
+        x += 1
+    list1 = ['link_0', 'link_1', 'link_2', 'link_3', 'link_4', 'link_5']
+    ll = []
+    for k in dict:
+        if dict[k]:
+            j = '-'.join(dict[k])
+            ll.append(j)
+    global l_l
+    l_l = [ll]
     return
+
+
+# def properties_parsing(key, single_post):
+#     single_property_post = single_post[key]
+#     raw_prop_data = []
+#     master_list = []
+#     x = 0
+#     while x < len(single_property_post):
+#         single_prop = single_property_post[x]
+#         name = single_prop['name']
+#         values = single_prop['values']
+#         if values:
+#             values = values[0]
+#             values = values[0]
+#             parsed_data = name + ': ' + values
+#             print(parsed_data)
+#             master_list.append(parsed_data)
+#
+#         x += 1
+#         global properies_list
+#         properies_list = master_list
+#     return
+#
+#
+# def requirements_parsing(key, single_post):
+#     single_requirements_post = single_post[key]
+#     raw_requirements_data = []
+#     master_list = []
+#     x = 0
+#     while x < len(single_requirements_post):
+#         single_requirements = single_requirements_post[x]
+#         name = single_requirements['name']
+#         values = single_requirements['values']
+#         if values:
+#             values = values[0]
+#             values = values[0]
+#             parsed_data = name + ': ' + values
+#             master_list.append(parsed_data)
+#
+#         x += 1
+#         global requirements_list
+#         requirements_list = master_list
+#     return
+#
 
 
 def get_price_override(stashname):
@@ -52,6 +139,7 @@ def get_price_override(stashname):
 
 
 def post(item_length, list_items, priceoverride, accountname, stashid, stashname):
+
     x = 0
     list_index['stash']
     keylist = ['icon', 'name', 'stackSize', 'identified', 'descrText', 'ilvl',
@@ -63,7 +151,13 @@ def post(item_length, list_items, priceoverride, accountname, stashid, stashname
                 'stashid': stashid, 'stashname': stashname}
         for key in keylist:
             try:
-                Post[key] = items_in_index[key]
+                if key == 'sockets':
+                    socket_parsing(key=key, single_post=items_in_index[key])
+                    # print(link_list_parsed)
+                    print(l_l)
+                    Post[key] = l_l
+                else:
+                    Post[key] = items_in_index[key]
             except KeyError:
                 continue
         extended = items_in_index["extended"]
@@ -98,6 +192,7 @@ def post(item_length, list_items, priceoverride, accountname, stashid, stashname
         try:
             if extended['category'] not in ['heistequipment']:
                 if extended['category'] not in ['heistmission']:
+                    a = ''
                     collections[extended['category']].insert_one(Post)
         except KeyError:
             pass
@@ -119,7 +214,6 @@ while True:  # loops infinitely
         response = requests.get(url, headers=headers)
         file.close()
         # reads the response and formats as json
-        print(response)
         json_response = response.json()
         # gets the next change id
         next_change_id = json_response['next_change_id']
@@ -135,28 +229,33 @@ while True:  # loops infinitely
         f.close()
         x = 0
         while x < list_length:
+
             # loops trough the stash data list
             list_index = json_data[x]
             # filters out anything but the league you are wanting data from
             # this can be anything before items in the json data or nothing at all it just makes the data alot smaller
-            if list_index['league'] == 'Heist':
-                stashname = list_index['stash']
+            # if list_index['league'] == 'Heist':
+            stashname = list_index['stash']
+            try:
                 if '~' in stashname:
                     priceoverride = get_price_override(stashname)
                 else:
                     priceoverride = ''
+            except TypeError:
+                priceoverride = ''
                 # priceoverride(list_index['Stash'])
                 # ETHICAL LEAGUE (PL12057)
                 # grabs all the item data form the stashes in that what ever filter you set
-                acc_name = list_index['accountName']
-                list_items = list_index['items']
-                stash_id = list_index['id']
-                stash_name = list_index['stash']
-                # gets length of the item data list
-                item_length = len(list_items)
-                # loops through the item list
-                post(item_length=item_length,
-                     list_items=list_items, priceoverride=priceoverride, accountname=acc_name, stashid=stash_id, stashname=stash_name)
+            acc_name = list_index['accountName']
+            list_items = list_index['items']
+            stash_id = list_index['id']
+            stash_name = list_index['stash']
+
+            # gets length of the item data list
+            item_length = len(list_items)
+            # loops through the item list
+            post(item_length=item_length,
+                 list_items=list_items, priceoverride=priceoverride, accountname=acc_name, stashid=stash_id, stashname=stash_name)
 
             x += 1
         # writes next change id to the file so it can be on the current shard
