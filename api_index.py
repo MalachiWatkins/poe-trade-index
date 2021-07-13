@@ -30,8 +30,7 @@ flaskCollection = Itemdb["Flasks"]
 # check stash id if same in db check for diff and remove
 
 
-link_list_parsed = []
-l_l = []
+socket_list = []
 
 
 def socket_parsing(key, single_post):
@@ -65,14 +64,13 @@ def socket_parsing(key, single_post):
             if link_key == socket_groups:
                 dict[link_key].append(socket_colour)
         x += 1
-    list1 = ['link_0', 'link_1', 'link_2', 'link_3', 'link_4', 'link_5']
-    ll = []
-    for k in dict:
-        if dict[k]:
-            j = '-'.join(dict[k])
-            ll.append(j)
-    global l_l
-    l_l = [ll]
+    socket_list_join = []
+    for key in dict:
+        if dict[key]:
+            updated_link = '-'.join(dict[k])
+            socket_list_join.append(updated_link)
+    global socket_list
+    socket_list = [socket_list_join]
     return
 
 
