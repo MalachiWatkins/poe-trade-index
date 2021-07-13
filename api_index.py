@@ -67,35 +67,35 @@ def socket_parsing(key, single_post):
     socket_list_join = []
     for key in dict:
         if dict[key]:
-            updated_link = '-'.join(dict[k])
+            updated_link = '-'.join(dict[key])
             socket_list_join.append(updated_link)
     global socket_list
     socket_list = [socket_list_join]
     return
 
 
-# def properties_parsing(key, single_post):
-#     single_property_post = single_post[key]
-#     raw_prop_data = []
-#     master_list = []
-#     x = 0
-#     while x < len(single_property_post):
-#         single_prop = single_property_post[x]
-#         name = single_prop['name']
-#         values = single_prop['values']
-#         if values:
-#             values = values[0]
-#             values = values[0]
-#             parsed_data = name + ': ' + values
-#             print(parsed_data)
-#             master_list.append(parsed_data)
-#
-#         x += 1
-#         global properies_list
-#         properies_list = master_list
-#     return
-#
-#
+properies_list = []
+
+
+def properties_parsing(key, single_post):
+    # name: values
+    master_list = []
+    x = 0
+    while x < len(single_post):
+        single_prop = single_post[x]
+        name = single_prop['name']
+        values = single_prop['values']
+        if values:
+            values = values[0]
+            values = values[0]
+            parsed_data = name + ': ' + values
+            master_list.append(parsed_data)
+        x += 1
+        global properies_list
+        properies_list = [master_list]
+    return
+
+
 # def requirements_parsing(key, single_post):
 #     single_requirements_post = single_post[key]
 #     raw_requirements_data = []
@@ -115,7 +115,6 @@ def socket_parsing(key, single_post):
 #         global requirements_list
 #         requirements_list = master_list
 #     return
-#
 
 
 def get_price_override(stashname):
@@ -151,9 +150,11 @@ def post(item_length, list_items, priceoverride, accountname, stashid, stashname
             try:
                 if key == 'sockets':
                     socket_parsing(key=key, single_post=items_in_index[key])
-                    # print(link_list_parsed)
-                    print(l_l)
-                    Post[key] = l_l
+                    Post[key] = socket_list
+                elif key == 'properties':
+                    properties_parsing(
+                        key=key, single_post=items_in_index[key])
+                    Post[key] = properies_list
                 else:
                     Post[key] = items_in_index[key]
             except KeyError:
@@ -200,8 +201,8 @@ def post(item_length, list_items, priceoverride, accountname, stashid, stashname
 
 
 while True:  # loops infinitely
-    # stops for 600 milleseconds so app doest get rate limited
-    time.sleep(.600)
+    # stops for 700 milleseconds so app doest get rate limited
+    time.sleep(.700)
     # opens txt file and reads change id
     with open("next_change_id.txt") as file:
         change_id = file.read()
