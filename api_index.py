@@ -76,9 +76,10 @@ def socket_parsing(key, single_post):
 
 properies_list = []
 
+requirements_list = []
+
 
 def properties_parsing(key, single_post):
-    # name: values
     master_list = []
     x = 0
     while x < len(single_post):
@@ -96,25 +97,23 @@ def properties_parsing(key, single_post):
     return
 
 
-# def requirements_parsing(key, single_post):
-#     single_requirements_post = single_post[key]
-#     raw_requirements_data = []
-#     master_list = []
-#     x = 0
-#     while x < len(single_requirements_post):
-#         single_requirements = single_requirements_post[x]
-#         name = single_requirements['name']
-#         values = single_requirements['values']
-#         if values:
-#             values = values[0]
-#             values = values[0]
-#             parsed_data = name + ': ' + values
-#             master_list.append(parsed_data)
-#
-#         x += 1
-#         global requirements_list
-#         requirements_list = master_list
-#     return
+def requirements_parsing(key, single_post):
+    master_list = []
+    x = 0
+    while x < len(single_post):
+        single_requirements = single_post[x]
+        name = single_requirements['name']
+        values = single_requirements['values']
+        if values:
+            values = values[0]
+            values = values[0]
+            parsed_data = name + ': ' + values
+            master_list.append(parsed_data)
+
+        x += 1
+        global requirements_list
+        requirements_list = master_list
+    return
 
 
 def get_price_override(stashname):
@@ -155,6 +154,10 @@ def post(item_length, list_items, priceoverride, accountname, stashid, stashname
                     properties_parsing(
                         key=key, single_post=items_in_index[key])
                     Post[key] = properies_list
+                elif key == 'requirements':
+                    requirements_parsing(
+                        key=key, single_post=items_in_index[key])
+                    Post[key] = requirements_list
                 else:
                     Post[key] = items_in_index[key]
             except KeyError:
