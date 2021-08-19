@@ -158,6 +158,8 @@ def post(item_length, list_items, priceoverride, accountname, stashid, stashname
                     requirements_parsing(
                         key=key, single_post=items_in_index[key])
                     Post[key] = requirements_list
+                elif key == 'ilvl':
+                    Post[key] = str(items_in_index[key])
                 else:
                     Post[key] = items_in_index[key]
             except KeyError:
