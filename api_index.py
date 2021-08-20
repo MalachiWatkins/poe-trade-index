@@ -160,6 +160,8 @@ def post(item_length, list_items, priceoverride, accountname, stashid, stashname
                     Post[key] = requirements_list
                 elif key == 'ilvl':
                     Post[key] = str(items_in_index[key])
+                elif key == 'stackSize':
+                    Post[key] = str(items_in_index[key])
                 else:
                     Post[key] = items_in_index[key]
             except KeyError:
@@ -206,8 +208,8 @@ def post(item_length, list_items, priceoverride, accountname, stashid, stashname
 
 
 while True:  # loops infinitely
-    # stops for 700 milleseconds so app doest get rate limited
-    time.sleep(.700)
+    # stops for 800 milleseconds so app doest get rate limited
+    time.sleep(.800)
     # opens txt file and reads change id
     with open("next_change_id.txt") as file:
         change_id = file.read()
