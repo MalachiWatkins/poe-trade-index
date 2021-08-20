@@ -8,7 +8,7 @@ import pprint
 from pymongo import MongoClient
 import pymongo
 from configparser import ConfigParser
-
+print('Running')
 # import pdb
 # pdb.set_trace()  # debuger
 cluster = MongoClient(Atlas_Connect)
@@ -198,7 +198,6 @@ def post(item_length, list_items, priceoverride, accountname, stashid, stashname
         try:
             if extended['category'] not in ['heistequipment']:
                 if extended['category'] not in ['heistmission']:
-                    a = ''
                     collections[extended['category']].insert_one(Post)
         except KeyError:
             pass
